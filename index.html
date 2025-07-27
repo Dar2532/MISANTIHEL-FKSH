@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>MISANTHIEL</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe Script', cursive;
+      cursor: pointer;
+      position: relative;
+      animation: fondoAmor 40s ease-in-out infinite;
+    }
+
+    @keyframes fondoAmor {
+      0%   { background: radial-gradient(circle at top, #1a001a, #000); }
+      25%  { background: radial-gradient(circle at top, #330133, #180018); }
+      50%  { background: radial-gradient(circle at top, #84235d, #2b001e); }
+      75%  { background: radial-gradient(circle at top, #502040, #330033); }
+      100% { background: radial-gradient(circle at top, #1a001a, #000); }
+    }
+
+    .corazon {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      animation: latido 2s infinite, aparecer 0.4s ease-out;
+    }
+
+    @keyframes latido {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    @keyframes aparecer {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    text {
+      font-size: 22px;
+      fill: #ad0675;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 6px #ff8ac5;
+    }
+
+    .corona {
+      position: absolute;
+      font-size: 40px;
+      color: gold;
+      animation: brillo 2s ease-in-out infinite, bajar 1s ease-out;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes brillo {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    @keyframes bajar {
+      0% { transform: translateY(-100px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    audio {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 999;
+    }
+
+    .flotante {
+      position: absolute;
+      font-size: 26px;
+      color: #80dbf1;
+      animation: flotar 5s linear;
+      opacity: 0.9;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes flotar {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-400px) scale(0.6); opacity: 0; }
+    }
+
+    .chispa {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: gold;
+      border-radius: 50%;
+      animation: chispa 2s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes chispa {
+      0% { opacity: 1; transform: scale(1) translateY(0); }
+      100% { opacity: 0; transform: scale(1.5) translateY(-100px); }
+    }
+
+    .dedicatoria {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 42px;
+      color: gold;
+      text-shadow: 2px 2px 12px #ffcaf5;
+      animation: fade 6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0; transform: scale(0.8); }
+      10% { opacity: 1; transform: scale(1.1); }
+      90% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.9); }
+    }
+
+    .estrella {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: brillar 3s infinite;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @keyframes brillar {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<div id="inicio" style="
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(#120012, #000);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: gold;
+  font-family: 'Segoe Script', cursive;
+  text-align: center;
+  padding: 20px;
+">
+  <h1 style="font-size: 40px; text-shadow: 2px 2px 12px #ffcaf5;">Bienvenido mi amor hermoso💖</h1>
+  <p>Ingresa la clave secreta, año de conocernos </p>
+  <input type="password" id="claveInput" placeholder="Clave" style="font-size: 24px; padding: 8px; border-radius: 8px; border: none;" />
+  <button onclick="validarClave()" style="margin-top: 20px; font-size: 24px; padding: 10px 30px; border-radius: 12px; background: gold; color: #400040; border: none; cursor: pointer;">
+    Empezar
+  </button>
+</div>
+<body onclick="generarCorazon(event)">
+  <audio autoplay loop>
+    <source src="CANCION/Perfect.mp3" type="audio/mp3">
+  </audio>
+
+  <svg id="constelaciones" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></svg>
+
+  <script>
+    const frases = [
+      "TE ADORO ♥️",
+      "TE AMO MI FREDY 💫",
+      "GRACIAS POR ESTAR CONMIGO✨",
+      "GRACIAS POR EXISTIR 🌷",
+      "TE AMO 🌙",
+      "BESITOS PARA TI 💞",
+      "ME ALEGRAS LA VIDA 🎈"
+    ];
+    let index = 0;
+    let corazonAnterior = null;
+    let coronaAnterior = null;
+    let contador = 0;
+    let estrellasClic = [];
+
+    function dibujarConstelacion() {
+      if (estrellasClic.length < 2) return;
+
+      const [p1, p2] = estrellasClic.slice(-2);
+      const linea = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      linea.setAttribute("x1", p1.x);
+      linea.setAttribute("y1", p1.y);
+      linea.setAttribute("x2", p2.x);
+      linea.setAttribute("y2", p2.y);
+      linea.setAttribute("stroke", "gold");
+      linea.setAttribute("stroke-width", "1.5");
+      document.getElementById("constelaciones").appendChild(linea);
+    }
+
+    function generarCorazon(event) {
+      contador++;
+      const x = event.clientX - 350;
+      const y = event.clientY - 350;
+
+      estrellasClic.push({ x: event.clientX, y: event.clientY });
+
+
+      if (contador === 1) {
+        const imgCorazon = document.createElement('div');
+        imgCorazon.className = 'corazon';
+        imgCorazon.style.left = `${x}px`;
+        imgCorazon.style.top = `${y}px`;
+        imgCorazon.innerHTML = `
+          <svg viewBox="0 0 800 800">
+            <defs>
+              <clipPath id="clipCorazon">
+                <path d="M400,550 C200,400 200,200 400,300 C600,200 600,400 400,550" />
+              </clipPath>
+            </defs>
+            <image href="imagenes/im2.jpg" width="800" height="800" clip-path="url(#clipCorazon)" />
+          </svg>
+        `;
+        document.body.appendChild(imgCorazon);
+      }
+
+      const frase = frases[index];
+      index = (index + 1) % frases.length;
+
+      const uniqueId = 'c' + Date.now();
+      const div = document.createElement('div');
+      div.className = 'corazon';
+      div.style.left = `${x}px`;
+      div.style.top = `${y}px`;
+      div.innerHTML = `
+        <svg viewBox="0 0 800 800">
+          <defs>
+            <path id="${uniqueId}" d="M400,550 C200,400 200,200 400,300 C600,200 600,400 400,550" />
+          </defs>
+          <text>
+            <textPath href="#${uniqueId}">
+              ${frase.repeat(5)}
+            </textPath>
+          </text>
+        </svg>
+      `;
+
+      const corona = document.createElement('div');
+      corona.className = 'corona';
+      corona.style.left = `${event.clientX - 20}px`;
+      corona.style.top = `${event.clientY - 400}px`;
+      corona.textContent = '👑';
+
+      if (corazonAnterior) corazonAnterior.remove();
+      if (coronaAnterior) coronaAnterior.remove();
+      corazonAnterior = div;
+      coronaAnterior = corona;
+
+      document.body.appendChild(div);
+      document.body.appendChild(corona);
+
+      for (let i = 0; i < 10; i++) {
+        const chispa = document.createElement('div');
+        chispa.className = 'chispa';
+        chispa.style.left = (event.clientX + Math.random() * 100 - 50) + 'px';
+        chispa.style.top = (event.clientY + Math.random() * 100 - 50) + 'px';
+        document.body.appendChild(chispa);
+        setTimeout(() => chispa.remove(), 2000);
+      }
+
+      if (contador % 5 === 0) {
+        const dedicatoria = document.createElement('div');
+        dedicatoria.className = 'dedicatoria';
+        dedicatoria.textContent = 'Para ti, Fredy 👑✨';
+        document.body.appendChild(dedicatoria);
+        setTimeout(() => dedicatoria.remove(), 6000);
+      }
+    }
+
+    const simbolos = ['💗', '👑', 'F', 'M'];
+    setInterval(() => {
+      const flotante = document.createElement('div');
+      flotante.className = 'flotante';
+      flotante.textContent = simbolos[Math.floor(Math.random() * simbolos.length)];
+      flotante.style.left = Math.random() * window.innerWidth + 'px';
+      flotante.style.bottom = '-40px';
+      document.body.appendChild(flotante);
+      setTimeout(() => flotante.remove(), 5000);
+    }, 300);
+
+    setInterval(() => {
+      const estrella = document.createElement('div');
+      estrella.className = 'estrella';
+      estrella.style.left = Math.random() * window.innerWidth + 'px';
+      estrella.style.top = Math.random() * window.innerHeight + 'px';
+      document.body.appendChild(estrella);
+      setTimeout(() => estrella.remove(), 3000);
+    }, 1000);
+    function validarClave() {
+  const clave = document.getElementById('claveInput').value;
+  if (clave === "2023") {
+    document.getElementById('inicio').style.display = 'none';
+
+    const audio = document.createElement('audio');
+    audio.autoplay = true;
+    audio.loop = true;
+    audio.innerHTML = '<source src="CANCION/Perfect.mp3" type="audio/mp3">';
+    document.body.appendChild(audio);
+  } else {
+    alert("Clave incorrecta. Intenta nuevamente 🗝️");
+  }
+}
+  </script>
+  
+</body>
+</html>
